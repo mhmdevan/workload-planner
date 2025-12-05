@@ -1,0 +1,102 @@
+<!-- src/app/features/planning/ui/planning-page/planning.page.html -->
+
+<mat-card class="planning">
+  <mat-card-header>
+    <mat-card-title>
+      Sprint Planning
+    </mat-card-title>
+    <mat-card-subtitle *ngIf="currentSprint() as sprint">
+      {{ sprint.name }} —
+      {{ sprint.startDate | date }} → {{ sprint.endDate | date }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <section class="planning__form">
+      <form [formGroup]="taskForm" (ngSubmit)="submitTask()">
+        <mat-form-field appearance="outline" class="planning__field">
+          <mat-label>Task title</mat-label>
+          <input matInput formControlName="title" />
+          <mat-error *ngIf="taskForm.controls.title.hasError('required')">
+            Title is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="planning__field planning__field--sm">
+          <mat-label>Estimate (hours)</mat-label>
+          <input matInput type="number" formControlName="estimateHours" />
+          <mat-error *ngIf="taskForm.controls.estimateHours.hasError('required')">
+            Estimate is required
+          </mat-error>
+          <mat-error *ngIf="taskForm.controls.estimateHours.hasError('min')">
+            At least 1 hour
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="planning__field">
+          <mat-label>Assignee</mat-label>
+          <mat-select formControlName="assigneeId">
+            <mat-option [value]="null">Unassigned</mat-option>
+            <mat-option
+              *ngFor="let member of memberOptions()"
+              [value]="member.id">
+              {{ member.fullName }} ({{ member.role }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Add task
+        </button>
+      </form>
+    </section>
+
+    <section class="planning__load" *ngIf="memberLoad().length; else noMembers">
+      <h3>Member load</h3>
+
+      <table mat-table [dataSource]="memberLoad()" class="load-table">
+        <ng-container matColumnDef="member">
+          <th mat-header-cell *matHeaderCellDef>Member</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.fullName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="planned">
+          <th mat-header-cell *matHeaderCellDef>Planned</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.plannedHours }} h
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="capacity">
+          <th mat-header-cell *matHeaderCellDef>Capacity</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.capacityHours }} h
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="utilization">
+          <th mat-header-cell *matHeaderCellDef>Utilization</th>
+          <td
+            mat-cell
+            *matCellDef="let row"
+          >
+            <span class="utilization" [ngClass]="utilizationClass(row)">
+              {{ (row.utilization * 100) | number:'1.0-0' }}%
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="loadColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: loadColumns;"></tr>
+      </table>
+    </section>
+
+    <ng-template #noMembers>
+      <p class="muted">
+        No team members are defined. Add members to your teams first.
+      </p>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

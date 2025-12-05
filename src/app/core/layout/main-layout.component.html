@@ -1,0 +1,59 @@
+<!-- src/app/core/layout/main-layout.component.html -->
+
+<mat-sidenav-container class="layout-container">
+  <mat-sidenav #sidenav mode="side" opened>
+    <div class="logo">
+      <span class="logo__mark">WP</span>
+      <span class="logo__title">{{ appTitle }}</span>
+    </div>
+
+    <mat-nav-list>
+      <a
+        mat-list-item
+        *ngFor="let item of navItems()"
+        [routerLink]="item.route"
+        routerLinkActive="is-active"
+      >
+        <mat-icon matListIcon>{{ item.icon }}</mat-icon>
+        <span matLine>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="toolbar">
+      <button
+        mat-icon-button
+        class="toolbar__menu-btn"
+        type="button"
+        (click)="sidenav.toggle()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="toolbar__title">
+        {{ appTitle }}
+      </span>
+
+      <span class="toolbar__spacer"></span>
+
+      <!-- theme toggle فقط -->
+      <button
+        mat-icon-button
+        type="button"
+        (click)="toggleTheme()"
+        [attr.aria-label]="darkMode() ? 'Switch to light theme' : 'Switch to dark theme'"
+      >
+        <mat-icon>{{ darkMode() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      </button>
+
+      <button mat-icon-button aria-label="Account">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="layout-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

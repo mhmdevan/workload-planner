@@ -1,0 +1,65 @@
+/* src/app/features/planning/ui/planning-page/planning.page.scss */
+
+.planning {
+  display: block;
+}
+
+.planning__form {
+  margin-bottom: 1.5rem;
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+  }
+}
+
+.planning__field {
+  flex: 1 1 220px;
+
+  &--sm {
+    max-width: 160px;
+  }
+}
+
+.planning__load {
+  h3 {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.load-table {
+  width: 100%;
+}
+
+.utilization {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  display: inline-block;
+
+  &--idle {
+    background: rgba(158, 158, 158, 0.15);
+    color: #616161;
+  }
+
+  &--ok {
+    background: rgba(76, 175, 80, 0.16);
+    color: #2e7d32;
+  }
+
+  &--warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: #f57f17;
+  }
+
+  &--overloaded {
+    background: rgba(244, 67, 54, 0.2);
+    color: #c62828;
+  }
+}
+
+.muted {
+  opacity: 0.6;
+}

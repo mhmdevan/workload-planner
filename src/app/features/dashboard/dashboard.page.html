@@ -1,0 +1,65 @@
+<!-- src/app/features/dashboard/dashboard.page.html -->
+
+<div class="dashboard">
+  <section class="dashboard__cards">
+    <mat-card class="kpi-card">
+      <mat-card-title>
+        <mat-icon>groups</mat-icon>
+        <span>Total Teams</span>
+      </mat-card-title>
+      <mat-card-content>
+        <p class="kpi-card__value">{{ metrics().totalTeams }}</p>
+        <p class="kpi-card__hint">
+          Active: {{ metrics().activeTeams }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <mat-card-title>
+        <mat-icon>person</mat-icon>
+        <span>Members</span>
+      </mat-card-title>
+      <mat-card-content>
+        <p class="kpi-card__value">{{ metrics().totalMembers }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <mat-card-title>
+        <mat-icon>schedule</mat-icon>
+        <span>Avg Weekly Capacity</span>
+      </mat-card-title>
+      <mat-card-content>
+        <p class="kpi-card__value">
+          {{ metrics().averageCapacityPerMember | number:'1.0-1' }}
+          <span class="kpi-card__suffix">h / member</span>
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <section class="dashboard__chart" *ngIf="metrics().totalMembers > 0; else emptyChart">
+    <mat-card>
+      <mat-card-title>Roles distribution</mat-card-title>
+      <mat-card-content>
+        <canvas
+          baseChart
+          [data]="rolesChartData()"
+          [type]="rolesChartType"
+          [options]="rolesChartOptions">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <ng-template #emptyChart>
+    <mat-card>
+      <mat-card-content>
+        <p class="muted">
+          No members yet. Add some team members to see role distribution.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</div>

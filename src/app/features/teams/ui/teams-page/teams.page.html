@@ -1,0 +1,88 @@
+<!-- src/app/features/teams/ui/teams-page/teams.page.html -->
+
+<mat-card class="teams-page">
+  <mat-card-header>
+    <mat-card-title>Teams</mat-card-title>
+    <mat-card-subtitle> Manage engineering teams and their capacity. </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <section class="filters">
+      <form [formGroup]="filterForm" class="filters__form">
+        <mat-form-field appearance="outline" class="filters__search">
+          <mat-label>Search by name or code</mat-label>
+          <input matInput formControlName="search" placeholder="e.g. CORE, Data" />
+          <button
+            *ngIf="filterForm.controls.search.value"
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="filterForm.controls.search.setValue('')"
+            aria-label="Clear search"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="activeOnly"> Active teams only </mat-checkbox>
+
+        <button mat-button type="button" (click)="clearFilter()">Reset</button>
+      </form>
+    </section>
+
+    <div *ngIf="loading()" class="loading">Loading teams...</div>
+
+    <div *ngIf="error()" class="error">
+      {{ error() }}
+    </div>
+
+    <section class="table-wrapper" *ngIf="filteredTeams().length; else emptyState">
+      <table mat-table [dataSource]="filteredTeams()" class="teams-table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Team</th>
+          <td mat-cell *matCellDef="let team">
+            <div class="team-name">
+              <span class="team-name__title">{{ team.name }}</span>
+              <span class="team-name__code">{{ team.code }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Members Column -->
+        <ng-container matColumnDef="members">
+          <th mat-header-cell *matHeaderCellDef>Members</th>
+          <td mat-cell *matCellDef="let team">
+            <mat-chip-set *ngIf="team.members.length; else noMembers">
+              <mat-chip *ngFor="let m of team.members"> {{ m.fullName }} ({{ m.role }}) </mat-chip>
+            </mat-chip-set>
+            <ng-template #noMembers>
+              <span class="muted">No members assigned</span>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let team">
+            <span class="status-pill" [class.status-pill--inactive]="!team.isActive">
+              {{ team.isActive ? 'Active' : 'Archived' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Header & Row Declarations -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <mat-icon>group_off</mat-icon>
+        <p>No teams match your filter.</p>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
